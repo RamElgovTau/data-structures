@@ -66,22 +66,22 @@ public class FibonacciHeap {
             }
 
             // make the orphan children roots themselves.
-            HeapNode child = min.child;
             HeapNode tmp;
-            if (child != null) {
+            if (min.child != null) {
                 do {
-                    child.parent = null;
-                    if (child.mark) {
+                    tmp = min.child;
+                    tmp.parent = null;
+                    if (tmp.mark) {
                         // roots are unmarked
                         countMarks -= 1;
-                        child.mark = false;
+                        tmp.mark = false;
                     }
-                    tmp = child;
-                    child = child.next;
+                    min.child = tmp.next;
                     min.addSibling(tmp);
+
                     countRoots += 1;  // orphan child becomes a root
 
-                } while (child != min.child);
+                } while (!tmp.isRoot());
             }
 
             // remove min from the list of roots using pointers.
@@ -181,6 +181,7 @@ public class FibonacciHeap {
         first.prev.next = heap2.first;
         heap2.first.prev = first.prev;
         first.prev = heap2Last;
+        size += heap2.size;
     }
 
     /**

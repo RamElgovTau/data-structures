@@ -36,13 +36,14 @@ public class Main {
         printSiblings(fibonacciHeap.first);
         printSiblings(fibonacciHeap.first.child);
         printSiblings(fibonacciHeap.first.child.parent);
-        fibonacciHeap.delete(fibonacciHeap.min);
+//        fibonacciHeap.delete(fibonacciHeap.min);
+        fibonacciHeap.deleteMin();
         printSiblings(fibonacciHeap.first);
     }
     public static void printSiblings(FibonacciHeap.HeapNode root) {
         FibonacciHeap.HeapNode node = root;
         do {
-            System.out.print(node.key + " rank: " + node.rank + " -> ");
+            System.out.print(node.key + " -> ");
 
             node = node.next;
         } while (node != root);
