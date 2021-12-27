@@ -216,7 +216,9 @@ public class FibonacciHeap {
      * It is assumed that x indeed belongs to the heap.
      */
     public void delete(HeapNode x) {
-        return; // should be replaced by student code
+        int delta = x.key - Integer.MIN_VALUE;
+        decreaseKey(x, delta);
+        deleteMin();
     }
 
     /**
@@ -234,6 +236,7 @@ public class FibonacciHeap {
         if (x.parent.key > x.key)
             // invariant violation
             cascadingCut(x, x.parent);
+        updateMin();
     }
 
     private void cut(HeapNode x, HeapNode y) {
@@ -257,7 +260,7 @@ public class FibonacciHeap {
 
     private void cascadingCut(HeapNode x, HeapNode y) {
         cut(x, y);
-        if (y.parent != null) {
+        if (!y.isRoot()) {
             if (!y.mark) {
                 y.mark = true;
                 countMarks += 1;

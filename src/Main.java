@@ -27,7 +27,7 @@ public class Main {
         fibonacciHeap.meld(fibonacciHeap1);
         printSiblings(fibonacciHeap.first);
         System.out.println("min: " + fibonacciHeap.min.key);
-        fibonacciHeap.decreaseKey(fibonacciHeap.min, 1);
+        fibonacciHeap.decreaseKey(fibonacciHeap.min, 24);
         printSiblings(fibonacciHeap.first);
         System.out.println("min: " + fibonacciHeap.min.key);
         fibonacciHeap.first.addChild(new FibonacciHeap.HeapNode(101));
@@ -36,7 +36,8 @@ public class Main {
         printSiblings(fibonacciHeap.first);
         printSiblings(fibonacciHeap.first.child);
         printSiblings(fibonacciHeap.first.child.parent);
-
+        fibonacciHeap.delete(fibonacciHeap.min);
+        printSiblings(fibonacciHeap.first);
     }
     public static void printSiblings(FibonacciHeap.HeapNode root) {
         FibonacciHeap.HeapNode node = root;
