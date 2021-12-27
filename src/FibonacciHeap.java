@@ -4,12 +4,12 @@
  * An implementation of a Fibonacci Heap over integers.
  */
 public class FibonacciHeap {
-    private HeapNode first;
-    private HeapNode min;
+    public HeapNode first;
+    public HeapNode min;
     private int size = 0;
-    private int countMarks = 0;
-    private int countRoots = 0;
-    private static int countCuts = 0, countLinks = 0;
+    public int countMarks = 0;
+    public int countRoots = 0;
+    public static int countCuts = 0, countLinks = 0;
 
     /**
      * public boolean isEmpty()
@@ -60,7 +60,7 @@ public class FibonacciHeap {
             if (size == 1) {
                 first = null;
                 min = null;
-                size -= 1;
+                size = 0;
                 countRoots -= 1;
                 return;
             }
@@ -91,8 +91,8 @@ public class FibonacciHeap {
             min.remove();
             size -= 1;
             countRoots -= 1; // deleting the minimum removes a root from heap.
+            first = consolidate(first);
             min = first;  // temp min until update min is made.
-            consolidate(first);
             // update min
             updateMin();
 
@@ -238,6 +238,7 @@ public class FibonacciHeap {
 
     private void cut(HeapNode x, HeapNode y) {
         countCuts += 1;
+        countRoots += 1;  // cut adds a new root to the heap
         x.parent = null;
         x.mark = false;
         countMarks -= 1;
@@ -288,7 +289,7 @@ public class FibonacciHeap {
      * tree which has larger value in its root under the other tree.
      */
     public static int totalLinks() {
-        return -345; // should be replaced by student code
+        return countLinks; // should be replaced by student code
     }
 
     /**
@@ -320,7 +321,7 @@ public class FibonacciHeap {
      * from its parent (during decreaseKey/delete methods).
      */
     public static int totalCuts() {
-        return -456; // should be replaced by student code
+        return countCuts; // should be replaced by student code
     }
 
     /**
@@ -336,6 +337,10 @@ public class FibonacciHeap {
         return arr; // should be replaced by student code
     }
 
+    public HeapNode getFirst() {
+        return first;
+    }
+
     /**
      * public class HeapNode
      * <p>
@@ -344,9 +349,9 @@ public class FibonacciHeap {
      */
     public static class HeapNode {
         public int key;
-        private int rank;
-        private boolean mark;
-        private HeapNode child, next, prev, parent;
+        public int rank;
+        public boolean mark;
+        public HeapNode child, next, prev, parent;
 
 
         /**
@@ -431,5 +436,28 @@ public class FibonacciHeap {
             }
         }
 
+        public int getRank() {
+            return rank;
+        }
+
+        public boolean getMarked() {
+            return mark;
+        }
+
+        public HeapNode getParent() {
+            return parent;
+        }
+
+        public HeapNode getNext() {
+            return next;
+        }
+
+        public HeapNode getPrev() {
+            return prev;
+        }
+
+        public HeapNode getChild() {
+            return child;
+        }
     }
 }
