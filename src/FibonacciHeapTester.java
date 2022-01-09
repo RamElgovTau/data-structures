@@ -209,7 +209,7 @@ public class FibonacciHeapTester {
         heap = new Heap();
         fibonacciHeap = new FibonacciHeap();
         addKeys(0);
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -226,7 +226,7 @@ public class FibonacciHeapTester {
         heap = new Heap();
         fibonacciHeap = new FibonacciHeap();
         addKeysReverse(0);
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -245,7 +245,7 @@ public class FibonacciHeapTester {
         addKeys(0);
         addKeysReverse(4000);
         addKeys(2000);
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -278,7 +278,7 @@ public class FibonacciHeapTester {
         addKeysReverse(8000);
         addKeys(10000);
 
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey()) {
                 bugFound(test);
                 return;
@@ -351,7 +351,7 @@ public class FibonacciHeapTester {
         }
 
         for (int i = 2000; i < 2500; i++) {
-            // 2000 up to 2499
+            // 2000 to 2499
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 System.out.println("heap min: " + heap.findMin() + ", fib min: " + fibonacciHeap.findMin().getKey());
                 System.out.println("heap size: " + heap.size() + ", fib size: " + fibonacciHeap.size());
@@ -362,7 +362,7 @@ public class FibonacciHeapTester {
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -397,7 +397,7 @@ public class FibonacciHeapTester {
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -432,7 +432,7 @@ public class FibonacciHeapTester {
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
                 return;
@@ -469,7 +469,7 @@ public class FibonacciHeapTester {
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 
-        while (!heap.empty()) {
+        while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
 
                 bugFound(test);

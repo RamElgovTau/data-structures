@@ -11,7 +11,7 @@ class Heap {
         return this.set.size();
     }
 
-    public boolean empty() {
+    public boolean isEmpty() {
         return this.set.isEmpty();
     }
 
@@ -28,7 +28,7 @@ class Heap {
     }
 
     public int findMin() {
-        if (this.empty())
+        if (this.isEmpty())
             return -1;
         return (int)(this.set.first());
     }
@@ -38,4 +38,3 @@ class Heap {
 
     }
 }
-
