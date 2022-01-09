@@ -58,16 +58,10 @@ public class FibonacciHeap {
      * complexity: amortized O(logn)
      */
     public void deleteMin() {
-        if (size > 0) {
-            // if the min is the only node in the heap
-            if (size == 1) {
-                first = null;
-                min = null;
-                size = 0;
-                countHeapTrees -= 1;
-                return;
-            }
-
+        // if the heap is not empty
+        if (size > 1) {
+            size -= 1;
+            countHeapTrees -= 1;
             // make the orphan children roots themselves.
             HeapNode child = min.child;
             HeapNode tmp;
@@ -92,13 +86,18 @@ public class FibonacciHeap {
                 first = first.next;
             }
             min.remove();
-            size -= 1;
             consolidate(first);
             min = first;  // temp min until update min is made.
             // update min
             updateMin();
 
+        } else {
+            min = null;
+            first = null;
+            size = 0;
+            countHeapTrees = 0;
         }
+
     }
 
     private void updateMin() {
@@ -419,12 +418,13 @@ public class FibonacciHeap {
         /**
          * creates a new HeapNode with the given key. initially the node is unmarked and has no children.
          *
-         * @param key
+         * @param key for the constructed node.
          */
         public HeapNode(int key) {
             this.key = key;     // key is the given key
             this.mark = false;  // unmarked
             this.rank = 0;      // no children
+            // pointers will initialized to default (null)
         }
 
         public int getKey() {
