@@ -11,6 +11,30 @@ public class FibonacciHeap {
     private int countHeapTrees = 0;
     static int countCuts = 0, countLinks = 0;
 
+    public HeapNode getMin() {
+        return min;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getCountMarks() {
+        return countMarks;
+    }
+
+    public int getCountHeapTrees() {
+        return countHeapTrees;
+    }
+
+    public static int getCountCuts() {
+        return countCuts;
+    }
+
+    public static int getCountLinks() {
+        return countLinks;
+    }
+
     /**
      * Public boolean isEmpty()
      * <p>
@@ -31,9 +55,22 @@ public class FibonacciHeap {
      * complexity: O(1)
      */
     public HeapNode insert(int key) {
+        return insert(key, null);
+    }
+
+    /**
+     * helper insert method for kMin.
+     * @param key to insert.
+     * @param info to insert with correspondingly given key.
+     * @return Returns the newly created node.
+     * The added key is assumed not to already belong to the heap.
+     * <p>
+     * Complexity O(1)
+     */
+    private HeapNode insert(int key, HeapNode info) {
         countHeapTrees += 1;
         size += 1;
-        HeapNode heapNode = new HeapNode(key);
+        HeapNode heapNode = new HeapNode(key, info);
         if (isEmpty()) {
             // empty heap
             first = heapNode;
@@ -66,31 +103,19 @@ public class FibonacciHeap {
             HeapNode child = min.child;
             HeapNode tmp;
             if (child != null) {
-                do {
-                    child.parent = null;
-                    if (child.mark) {
-                        // roots are unmarked
-                        countMarks -= 1;
-                        child.mark = false;
-                    }
-                    tmp = child;
-                    child = child.next;
-                    min.addSibling(tmp);
-                    countHeapTrees += 1;  // orphan child becomes a root
-
-                } while (child != min.child);
+                HeapNode leftMostChild = min.child;
+                HeapNode rightMostChild = leftMostChild.prev;
+                connectChildrenToRoots(leftMostChild, rightMostChild);
+                transformChildrenToRoots(leftMostChild);
+            } else {
+                // min has no children
+                min.next.prev = min.prev;
+                min.prev.next = min.next;
             }
-
-            // remove min from the list of roots using pointers.
             if (first == min) {
                 first = first.next;
             }
-            min.remove();
             consolidate(first);
-            min = first;  // temp min until update min is made.
-            // update min
-            updateMin();
-
         } else {
             min = null;
             first = null;
@@ -100,14 +125,28 @@ public class FibonacciHeap {
 
     }
 
-    private void updateMin() {
-        HeapNode node = first;
-        if (node != null) {
-            do {
-                node = node.next;
-                updateMin(node);
-            } while (node.next != first);
-        }
+    private void connectChildrenToRoots(HeapNode leftMostChild, HeapNode rightMostChild) {
+        // detach edges and attach them to the right
+        leftMostChild.prev = min.prev;
+        leftMostChild.prev.next = leftMostChild;
+        rightMostChild.next = min.next;
+        rightMostChild.next.prev = rightMostChild;
+
+    }
+
+    private void transformChildrenToRoots(HeapNode firstChild) {
+        HeapNode tmp = firstChild;
+        do {
+            // make the current child a root.
+            tmp.parent = null;
+            countHeapTrees += 1;
+
+            if (tmp.mark) {
+                tmp.mark = false;
+                countMarks -= 1;
+            }
+            tmp = tmp.next;
+        } while (tmp != firstChild);
     }
 
     private void consolidate(HeapNode x) {
@@ -130,6 +169,7 @@ public class FibonacciHeap {
         }
         return buckets;
     }
+
     private void fromBuckets(HeapNode[] buckets) {
         countHeapTrees = 0;
         first = null;
@@ -137,16 +177,15 @@ public class FibonacciHeap {
         for (HeapNode tree : buckets) {
             if (tree != null) {
                 countHeapTrees += 1;
-                if (first == null) {
-                    first = tree;
-                    first.next = first;
-                    first.prev = first;
-                    min = first;
-                    curr = tree;
-                } else {
-                    insertAfter(curr, tree);
+                if (first != null) {
+                    curr.next = tree;
+                    tree.prev = curr;
                     curr = tree;
                     updateMin(tree);
+                } else {
+                    first = tree;
+                    min = first;
+                    curr = tree;
                 }
             }
         }
@@ -156,18 +195,6 @@ public class FibonacciHeap {
         }
     }
 
-    /**
-     * inserts node b after a in a doubly linked list.
-     *
-     * @param a insert after this node
-     * @param b insert this node after a
-     */
-    private void insertAfter(HeapNode a, HeapNode b) {
-        b.prev = a;
-        b.next = a.next;
-        a.next = b;
-        b.next.prev = b;
-    }
 
     /**
      * public HeapNode findMin()
@@ -195,6 +222,7 @@ public class FibonacciHeap {
             first.prev.next = heap2.first;
             heap2.first.prev = first.prev;
             first.prev = heap2Last;
+            updateMin(heap2.min);
         }
     }
 
@@ -234,6 +262,7 @@ public class FibonacciHeap {
         }
         return array; //	 to be replaced by student code
     }
+
     private int heapOrder() {
         int res = 0;
         HeapNode node = this.first;
@@ -243,6 +272,7 @@ public class FibonacciHeap {
         }
         return res;
     }
+
     private void fillCounters(int[] array) {
         HeapNode node = first;
         array[node.rank] += 1;
@@ -272,16 +302,12 @@ public class FibonacciHeap {
      * complexity: amortized O(1)
      */
     public void decreaseKey(HeapNode x, int delta) {
-        x.key -= delta;
-        if (x.isRoot()) {
-            updateMin(x);
-            return;
-        }
-
-        // invariant violation
-        if (x.parent.key > x.key)
+        x.key = x.key - delta;
+        // check if new minNode
+        updateMin(x);
+//         invariant violation check
+        if (x.parent != null && x.parent.key > x.key)
             cascadingCut(x, x.parent);
-        updateMin();
     }
 
     private void cut(HeapNode x, HeapNode y) {
@@ -392,10 +418,36 @@ public class FibonacciHeap {
      * The function should run in O(k*deg(H)). (deg(H) is the degree of the only tree in H.)
      * <p>
      * ###CRITICAL### : you are NOT allowed to change H.
+     * we are using a technic we saw at homework 4 that is based on creating a helper heap of size k.
+     * each time the next min candidates will be inserted to the helper heap. finally, using findMin on the helper heap
+     * we will be able to construct the kMin array.
+     * complexity: O(k*deg(H)).
      */
     public static int[] kMin(FibonacciHeap H, int k) {
-        int[] arr = new int[100];
-        return arr; // should be replaced by student code
+        int[] res = new int[k];
+        FibonacciHeap help = new FibonacciHeap();
+        HeapNode tmpMin, tmpMinFirstChild;
+        if (H != null && H.min != null) {
+            // initially insert the current minimum node.
+            help.insert(H.min.key, H.min);
+            for (int i = 0; i < k; i++) {
+                tmpMin = help.findMin();
+                res[i] = tmpMin.key;
+                tmpMinFirstChild = tmpMin.info.child;
+                if (tmpMinFirstChild != null)
+                    addMinCandidates(help, tmpMinFirstChild);
+                help.deleteMin();
+            }
+            return res; // should be replaced by student code
+        }
+        return new int[0];
+    }
+    private static void addMinCandidates(FibonacciHeap help, HeapNode first) {
+        HeapNode cur = first;
+        do {
+            help.insert(cur.getKey(), cur);
+            cur = cur.getNext();
+        } while (cur != first);
     }
 
     public HeapNode getFirst() {
@@ -409,10 +461,10 @@ public class FibonacciHeap {
      * (for example HeapNode), do it in this file, not in another file.
      */
     public static class HeapNode {
-        public int key;
-        public int rank;
-        public boolean mark;
-        public HeapNode child, next, prev, parent;
+        private int key;
+        private int rank;
+        private boolean mark;
+        private HeapNode child, next, prev, parent, info;
 
 
         /**
@@ -425,6 +477,11 @@ public class FibonacciHeap {
             this.mark = false;  // unmarked
             this.rank = 0;      // no children
             // pointers will initialized to default (null)
+        }
+
+        public HeapNode(int key, HeapNode info) {
+            this(key);
+            this.info = info;
         }
 
         public int getKey() {
