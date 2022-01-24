@@ -2,6 +2,13 @@
  * FibonacciHeap
  * <p>
  * An implementation of a Fibonacci Heap over integers.
+ * <p>
+ *
+ * @author Ram Elgov
+ * id: 206867517
+ * username: ramelgov
+ * @author id: 213231434
+ * username: orenbachar
  */
 public class FibonacciHeap {
     private HeapNode first;
@@ -60,7 +67,8 @@ public class FibonacciHeap {
 
     /**
      * helper insert method for kMin.
-     * @param key to insert.
+     *
+     * @param key  to insert.
      * @param info to insert with correspondingly given key.
      * @return Returns the newly created node.
      * The added key is assumed not to already belong to the heap.
@@ -92,7 +100,7 @@ public class FibonacciHeap {
      * public void deleteMin()
      * <p>
      * Deletes the node containing the minimum key.
-     * complexity: amortized O(logn)
+     * complexity: W.C: O(n), amortized O(logn)
      */
     public void deleteMin() {
         // if the heap is not empty
@@ -149,8 +157,8 @@ public class FibonacciHeap {
         } while (tmp != firstChild);
     }
 
-    private void consolidate(HeapNode x) {
-        fromBuckets(toBuckets(x));
+    private void consolidate(HeapNode firsNode) {
+        fromBuckets(toBuckets(firsNode));
     }
 
     private HeapNode[] toBuckets(HeapNode x) {
@@ -200,6 +208,7 @@ public class FibonacciHeap {
      * public HeapNode findMin()
      * <p>
      * Returns the node of the heap whose key is minimal, or null if the heap is empty.
+     * complexity O(1)
      */
     public HeapNode findMin() {
         return min;// should be replaced by student code
@@ -442,6 +451,7 @@ public class FibonacciHeap {
         }
         return new int[0];
     }
+
     private static void addMinCandidates(FibonacciHeap help, HeapNode first) {
         HeapNode cur = first;
         do {
